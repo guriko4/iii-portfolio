@@ -1,0 +1,14 @@
+@use '../utils/utils_all' as *;
+
+body {
+    background-color: $subColor;
+    color: $mainColor;
+}
+
+// ダークモード設定
+@media (prefers-color-scheme: dark) {
+    body {
+        background-color: $mainColor;
+        color: $subColor;
+    }
+}

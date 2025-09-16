@@ -1,0 +1,28 @@
+$mainColor: #222;
+$subColor: #fff;
+
+$baColor1: #E32D34;
+$baColor2: #ECA300;
+$baColor3: #71B32C;
+$baColor4: #005B9F;
+$baColor5: #9E3E92;
+$baColor6: #535658;
+
+// サイズの流体
+@function fluid($rem-size, $unit: "vw") {
+    // 16pxを基準に算出（フルHDの場合、16pxは0.83vw、縦幅は1.75vh）
+    $full-width: 0.83;
+    $full-height: 1.75;
+
+    @if $unit =="vw" {
+        @return #{($rem-size * $full-width)}vw;
+    }
+
+    @else if $unit =="vh" {
+        @return #{($rem-size * $full-height)}vh;
+    }
+
+    @else {
+        @error "⚠️引数に16pxを基準としたrem数と、'vw'または'vh'の指定をしてください";
+    }
+}
