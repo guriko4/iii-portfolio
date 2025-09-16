@@ -62,6 +62,7 @@ export default function App() {
 
     const onWheel = (event) => {
       if (!wheelEnabled()) return
+      if (Math.abs(ev.deltaY) < 5) return;
       if (isScrolling) return
       isScrolling = true
       event.preventDefault()
