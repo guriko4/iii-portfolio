@@ -133,10 +133,10 @@
     &::before {
       content: "iii PORTFOLIO";
       position: absolute;
-      top: 45%;
+      top: 42%;
       color: #fff;
       font-weight: bold;
-      font-size: fluid(16, vw);
+      font-size: fluid(15, vw);
       line-height: 0;
       opacity: 0;
     }
@@ -162,7 +162,7 @@
 
   &--text {
     width: 33%;
-    font-size: fluid(0.75, vw);
+    font-size: fluid(0.9, vw);
     display: inline-block;
     transform: scale(1.2, 1);
     padding: 9vh 0 0 5vw;
