@@ -57,6 +57,7 @@
         height: fluid(3, vw);
         font-size: fluid(4.5, vw);
         font-weight: bold;
+        text-align: right;
         position: absolute;
         bottom: 0;
         right: -6em;
@@ -93,6 +94,21 @@
     min-height: 100vh;
     height: 100vh;
     width: 100%;
+
+    &#web {
+      background: url(/img/section1-back.svg) no-repeat center center fixed;
+      background-size: cover;
+    }
+
+    &#graphic {
+      background: url(/img/section2-back.svg) no-repeat center center fixed;
+      background-size: cover;
+    }
+
+    &#about {
+      background: url(/img/about-back.svg) no-repeat center center fixed;
+      background-size: cover;
+    }
   }
 }
 
@@ -126,7 +142,7 @@
       &::before {
         opacity: 1;
         transform: translateY(0);
-        transition: opacity 1.5s ease 1s, transform 1.5s ease 1s;
+        transition: opacity 1.5s ease 1s;
       }
     }
 
@@ -136,7 +152,7 @@
       top: 42%;
       color: #fff;
       font-weight: bold;
-      font-size: fluid(15, vw);
+      font-size: fluid(16, vw);
       line-height: 0;
       opacity: 0;
     }

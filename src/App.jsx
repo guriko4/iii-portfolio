@@ -147,31 +147,31 @@ export default function App() {
               <a href="#home">HOME</a>
             </li>
             <li
-              data-text="Layouts"
+              data-text="WEB"
               data-bg="/img/title-back2.webp"
               className="menu-item"
               onMouseEnter={(e) => setBg(e.currentTarget.dataset.bg)}
               onMouseLeave={() => setBg("/img/title-back1.webp")}
             >
-              <a href="#layouts">Layouts</a>
+              <a href="#web">WEB</a>
             </li>
             <li
-              data-text="Interactions"
+              data-text="GRAPHIC"
               data-bg="/img/title-back3.webp"
               className="menu-item"
               onMouseEnter={(e) => setBg(e.currentTarget.dataset.bg)}
               onMouseLeave={() => setBg("/img/title-back1.webp")}
             >
-              <a href="#interactions">Interactions</a>
+              <a href="#graphic">GRAPHIC</a>
             </li>
             <li
-              data-text="Effects"
+              data-text="ABOUT"
               data-bg="/img/title-back4.webp"
               className="menu-item"
               onMouseEnter={(e) => setBg(e.currentTarget.dataset.bg)}
               onMouseLeave={() => setBg("/img/title-back1.webp")}
             >
-              <a href="#effects">Effects</a>
+              <a href="#about">ABOUT</a>
             </li>
           </ul>
         </nav>
@@ -196,15 +196,15 @@ export default function App() {
           </div>
         </section>
 
-        <section className="section" id="layouts">
+        <section className="section" id="web">
           セクション1
         </section>
 
-        <section className="section" id="interactions">
+        <section className="section" id="graphic">
           セクション2
         </section>
 
-        <section className="section" id="effects">
+        <section className="section" id="about">
           セクション3
         </section>
       </main>
