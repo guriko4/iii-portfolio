@@ -141,9 +141,7 @@ export default function App() {
                     <div ref={titleImgRef} className="top__title--img scroll-move"></div>
                 </div>
                 <div className="top__contents">
-                    <div className="top__contents--title">Mock
-                        Motion Labo
-                    </div>
+                    <div className="top__contents--title">iii PORTFOLIO</div>
                     <div className="top__contents--text">
                         <p>MOCK MOTION LABO is my creative space where I bring ideas to life.</p>
                         <p>Every project is a challenge to innovate and push my skills further!</p>
@@ -161,8 +159,6 @@ export default function App() {
 
             <section className="section" id="effects">
                 セクション3
-                <img src="/img/title-back1.webp" width="600" alt="" />
-
             </section>
         </main>
 
