@@ -141,10 +141,10 @@ export default function App() {
                     <div ref={titleImgRef} className="top__title--img scroll-move"></div>
                 </div>
                 <div className="top__contents">
-                    <div className="top__contents--title">iii PORTFOLIO</div>
+                    <div className="top__contents--title">Interactive Design Playground</div>
                     <div className="top__contents--text">
-                        <p>MOCK MOTION LABO is my creative space where I bring ideas to life.</p>
-                        <p>Every project is a challenge to innovate and push my skills further!</p>
+                        <p>This is my playground where design meets interaction.</p>
+                        <p>Exploring creativity through code, motion, and imagination.</p>
                     </div>
                 </div>
             </section>
