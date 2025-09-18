@@ -2,9 +2,17 @@ import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ScrollToPlugin } from "gsap/ScrollToPlugin";
+import GlassSlider from "./components/GlassSlider";
 
 export default function App() {
   const titleImgRef = useRef(null);
+
+  //グラススライダー
+  const sliderItems = [
+    { id: 1, title: "Web", body: "WordPress / React / GSAP" },
+    { id: 2, title: "Graphic", body: "Posters / Editorial / Branding" },
+    { id: 3, title: "About", body: "designer & Front-end" },
+  ];
 
   const setBg = (url = "/img/title-back1.webp") => {
     const el = titleImgRef.current;
@@ -197,15 +205,18 @@ export default function App() {
         </section>
 
         <section className="section" id="web">
-          セクション1
+          <div className="section--title">Web Design</div>
+          <div className="top__slider scroll-move">
+            <GlassSlider items={sliderItems} />
+          </div>
         </section>
 
         <section className="section" id="graphic">
-          セクション2
+          <div className="section--title">Graphic Design</div>
         </section>
 
         <section className="section" id="about">
-          セクション3
+          <div className="section--title">About Me</div>
         </section>
       </main>
 

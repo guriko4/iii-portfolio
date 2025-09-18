@@ -1,0 +1,50 @@
+.glass-slider {
+  width: min(960px, 92vw);
+  margin: 0 auto;
+
+  &__viewport {
+    overflow: hidden;
+    border-radius: 20px;
+  }
+
+  &__track {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: 100%;
+    transform: translateX(0);
+    transition: transform 0.35s ease;
+  }
+
+  &__slide {
+    padding: 16px;
+  }
+}
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 20px;
+  padding: 24px;
+  backdrop-filter: blur(10px) saturate(120%);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+}
+
+@supports not (
+  (
+    backdrop-filter: blur(1px),
+  )
+) {
+  .glass-card {
+    background: rgba(255, 255, 255, 0.12);
+  }
+}
+
+.glass-card__title {
+  font-size: 1.6rem;
+  margin: 0 0 0.5rem;
+}
+
+.glass-card__text {
+  line-height: 1.7;
+  opacity: 0.9;
+}
