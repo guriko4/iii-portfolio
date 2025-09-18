@@ -112,6 +112,9 @@
     }
 
     &--title {
+      position: absolute;
+      top: 0;
+      left: 0;
       font-size: fluid(7, vh);
       font-weight: bold;
       writing-mode: vertical-rl;
