@@ -53,6 +53,27 @@ ul {
   }
 }
 
+.glass-card__title-wrap {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  .link-icon {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    color: #fff;
+    opacity: 0.8;
+    transition: opacity 0.2s;
+
+    &:hover {
+      opacity: 1;
+    }
+  }
+}
+
 .glass-card__body {
   display: flex;
   gap: 24px;
@@ -91,11 +112,6 @@ ul {
   }
 }
 
-.glass-card__img {
-  flex: 1;
-  background-color: cornsilk;
-}
-
 .glass-slider__controls {
   display: flex;
   align-items: center;
@@ -129,6 +145,7 @@ ul {
 }
 
 .arrow {
+  position: relative;
   width: 40px;
   height: 40px;
   border-radius: 50%;
@@ -180,4 +197,155 @@ ul {
 .arrow:focus-visible {
   outline: 1px solid rgba(255, 255, 255, 0.9);
   outline-offset: 1px;
+}
+
+/* デバイス切替ボタン */
+.preview-toggle {
+  margin-top: 12px;
+  display: flex;
+  gap: 8px;
+}
+.toggle {
+  padding: 4px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: 0.2s;
+}
+.toggle.is-active {
+  background: rgba(255, 255, 255, 1);
+  color: #3c3c3c;
+  padding: 5px 10px;
+}
+
+/* プレビュー枠：スクロールせずトリミング表示 */
+.glass-card__img {
+  flex: 1;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+
+  &.pc {
+    aspect-ratio: 16 / 10;
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 12px;
+    }
+  }
+  &.sp {
+    aspect-ratio: 9 / 19;
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 12px;
+      max-width: clamp(300px, 40vw, 390px); /* スマホ見せ幅 */
+    }
+  }
+}
+
+/* モーダル */
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(2px);
+  display: grid;
+  place-items: center;
+  z-index: 9999;
+}
+.modal__inner {
+  position: relative;
+  width: min(1100px, 92vw);
+  height: min(90vh, 92dvh);
+  background: rgba(20, 20, 25, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 14px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+  display: grid;
+  grid-template-rows: auto 1fr;
+}
+.modal__close {
+  position: absolute;
+  top: 8px;
+  right: 10px;
+  font-size: 24px;
+  color: #fff;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  opacity: 0.8;
+  transition: opacity 0.2s;
+}
+.modal__close:hover {
+  opacity: 1;
+}
+.modal__content {
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  padding: 16px;
+
+  &.sp {
+    display: flex;
+    justify-content: center; /* 横中央 */
+    align-items: flex-start;
+  }
+}
+.modal__content img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+}
+
+/* ふわっと浮くのは枠そのものに適用 */
+.glass-card__img {
+  flex: 1;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  border-radius: 12px;
+
+  /* ← ここを追加 */
+  background: rgba(255, 255, 255, 0.02); /* ほんのり面を作る（任意） */
+  transition: transform 0.35s cubic-bezier(0.22, 0.61, 0.36, 1),
+    box-shadow 0.35s ease, filter 0.35s ease;
+  will-change: transform, box-shadow, filter;
+}
+
+/* PC/SP のアスペクトは現状のままでOK */
+.glass-card__img.pc {
+  aspect-ratio: 16 / 10;
+}
+.glass-card__img.sp {
+  aspect-ratio: 9 / 19;
+}
+
+/* 画像はそのまま（レイアウト用のみ） */
+.glass-card__img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* マウスがある環境で“枠”を浮かせる */
+@media (hover: hover) {
+  .glass-card__img:hover {
+    transform: translateY(-6px) scale(1.02); /* 枠ごとふわっと */
+    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.35); /* 枠の影を濃く */
+    filter: saturate(1.04) brightness(1.02); /* ほんのりリッチ（任意） */
+  }
+}
+
+/* キーボードでフォーカス入った時も同じ効果 */
+.glass-card__img:focus-within {
+  transform: translateY(-6px) scale(1.02);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.35);
 }

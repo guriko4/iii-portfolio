@@ -10,13 +10,6 @@ import AboutSlider from "./components/sliders/AboutSlider";
 export default function App() {
   const titleImgRef = useRef(null);
 
-  //グラススライダー
-  //const sliderItems = [
-  //  { id: 1, title: "Web", body: "WordPress / React / GSAP" },
-  //  { id: 2, title: "Graphic", body: "Posters / Editorial / Branding" },
-  //  { id: 3, title: "About", body: "designer & Front-end" },
-  //];
-
   const setBg = (url = "/img/title-back1.webp") => {
     const el = titleImgRef.current;
     if (!el) return;

@@ -1,8 +1,46 @@
-import React, { useState, useCallback, useRef } from "react";
+import React, { useState, useCallback, useRef, useEffect } from "react";
+import { createPortal } from "react-dom";
 import "./glass-slider.scss";
 
 export default function GlassSlider({ items = [] }) {
   const [index, setIndex] = useState(0);
+  const [viewMode, setViewMode] = useState("pc");
+  const [modalSrc, setModalSrc] = useState(null);
+  const [modalMode, setModalMode] = useState("pc");
+
+  // スクロール位置保存用
+  const scrollYRef = useRef(0);
+
+  // モーダル開閉に応じて背景スクロールをロック/解除
+  useEffect(() => {
+    if (!modalSrc) return; // 開いたときだけ実行
+    scrollYRef.current = window.scrollY;
+    const y = scrollYRef.current;
+
+    // ロック
+    document.body.style.position = "fixed";
+    document.body.style.top = `-${y}px`;
+    document.body.style.left = "0";
+    document.body.style.right = "0";
+    document.body.style.width = "100%";
+
+    return () => {
+      // 解除して元の位置へ
+      const top = document.body.style.top;
+      document.body.style.position = "";
+      document.body.style.top = "";
+      document.body.style.left = "";
+      document.body.style.right = "";
+      document.body.style.width = "";
+      window.scrollTo(0, -parseInt(top || "0", 10) || 0);
+    };
+  }, [modalSrc]);
+
+  //  カード内のプレビュー表示（PC or SP）
+  //  スライド切り替えたらPCに戻す
+  useEffect(() => {
+    setViewMode("pc");
+  }, [index]);
 
   //  スワイプ設定
   const startX = useRef(0);
@@ -20,7 +58,7 @@ export default function GlassSlider({ items = [] }) {
   //  スワイプハンドラ
   const onTouchStart = (e) => {
     startX.current = e.touches[0].clientX;
-    deltaX.curremt = 0;
+    deltaX.current = 0;
   };
   const onTouchMove = (e) => {
     deltaX.current = e.touches[0].clientX - startX.current;
@@ -31,10 +69,24 @@ export default function GlassSlider({ items = [] }) {
     else if (deltaX.current < -THRESHOLD) next();
     deltaX.current = 0;
   };
+
+  //  キー操作
   const onKeyDown = (e) => {
     if (e.key === "ArrowRight") next();
     else if (e.key === "ArrowLeft") prev();
   };
+
+  //  モーダル
+  const openModal = (src) => {
+    setModalSrc(src);
+    setModalMode(viewMode); // ← 開いたときの状態を保存
+  };
+  const closeModal = () => setModalSrc(null);
+  useEffect(() => {
+    const onEsc = (e) => e.key === "Escape" && closeModal();
+    if (modalSrc) window.addEventListener("keydown", onEsc);
+    return () => window.removeEventListener("keydown", onEsc);
+  }, [modalSrc]);
 
   return (
     <section className="slider-container">
@@ -52,44 +104,121 @@ export default function GlassSlider({ items = [] }) {
             className="glass-slider__track"
             style={{ transform: `translateX(${-index * 100}%)` }}
           >
-            {items.map((it, i) => (
-              <li
-                className="glass-slider__slide"
-                key={it.id ?? i}
-                aria-hidden={i !== index}
-              >
-                <article className="glass-card">
-                  <div className="glass-card__body">
-                    <div className="glass-card__text">
-                      <h3>{it.title}</h3>
-                      {it.tools && (
-                        <div className="tools">
-                          {it.tools.design && (
-                            <div>
-                              <strong>デザイン</strong>
-                              <p>{it.tools.design}</p>
-                            </div>
-                          )}
-                          {it.tools.frontend && (
-                            <div>
-                              <strong>フロントエンド</strong>
-                              <p>{it.tools.frontend}</p>
-                            </div>
-                          )}
-                          {it.tools.environment && (
-                            <div className="card-last">
-                              <strong>開発環境</strong>
-                              <p>{it.tools.environment}</p>
-                            </div>
+            {items.map((it, i) => {
+              const hasPC = !!it.preview?.pc || !!it.image; // 後方互換: imageをPC扱い
+              const hasSP = !!it.preview?.sp;
+              const activeSrc =
+                (viewMode === "sp" && hasSP && it.preview.sp) ||
+                it.preview?.pc ||
+                it.image ||
+                "";
+              return (
+                <li
+                  className="glass-slider__slide"
+                  key={it.id ?? i}
+                  aria-hidden={i !== index}
+                >
+                  <article className="glass-card">
+                    <div className="glass-card__body">
+                      {/*左テキスト*/}
+                      <div className="glass-card__text">
+                        <div className="glass-card__title-wrap">
+                          <div className="glass-card__title">
+                            <h3>{it.title}</h3>
+                          </div>
+                          {it.url && (
+                            <a
+                              className="link-icon"
+                              href={it.url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              aria-label="外部サイトを新しいタブで開く"
+                            >
+                              <span className="material-icons">link</span>
+                            </a>
                           )}
                         </div>
-                      )}
+                        {it.tools && (
+                          <div className="tools">
+                            {it.tools.design && (
+                              <div>
+                                <strong>デザイン</strong>
+                                <p>{it.tools.design}</p>
+                              </div>
+                            )}
+                            {it.tools.frontend && (
+                              <div>
+                                <strong>フロントエンド</strong>
+                                <p>{it.tools.frontend}</p>
+                              </div>
+                            )}
+                            {it.tools.environment && (
+                              <div className="card-last">
+                                <strong>開発環境</strong>
+                                <p>{it.tools.environment}</p>
+                              </div>
+                            )}
+                          </div>
+                        )}
+
+                        {/* PC/SP 切替（存在しない側は出さない） */}
+                        <div
+                          className="preview-toggle"
+                          role="tablist"
+                          aria-label="デバイス切り替え"
+                        >
+                          {hasPC && (
+                            <button
+                              type="button"
+                              className={`toggle ${
+                                viewMode === "pc" ? "is-active" : ""
+                              }`}
+                              onClick={() => setViewMode("pc")}
+                              aria-pressed={viewMode === "pc"}
+                            >
+                              PC表示
+                            </button>
+                          )}
+                          {hasSP && (
+                            <button
+                              type="button"
+                              className={`toggle ${
+                                viewMode === "sp" ? "is-active" : ""
+                              }`}
+                              onClick={() => setViewMode("sp")}
+                              aria-pressed={viewMode === "sp"}
+                            >
+                              スマホ表示
+                            </button>
+                          )}
+                        </div>
+
+                        {/*コメント*/}
+                        {it.comment && (
+                          <p className="glass-card__comment">{it.comment}</p>
+                        )}
+                      </div>
+
+                      {/* 右：プレビュー（クロップ表示・クリックで拡大） */}
+                      <div className={`glass-card__img ${viewMode}`}>
+                        {activeSrc ? (
+                          <img
+                            src={activeSrc}
+                            alt={`${
+                              it.title
+                            } ${viewMode.toUpperCase()}プレビュー`}
+                            onClick={() => openModal(activeSrc)}
+                            style={{ cursor: "zoom-in" }}
+                          />
+                        ) : (
+                          <div className="img--placeholder">No preview</div>
+                        )}
+                      </div>
                     </div>
-                    <div className="glass-card__img">{it.body}</div>
-                  </div>
-                </article>
-              </li>
-            ))}
+                  </article>
+                </li>
+              );
+            })}
           </ul>
         </div>
 
@@ -130,6 +259,34 @@ export default function GlassSlider({ items = [] }) {
             ></button>
           </nav>
         )}
+
+        {/*モーダル（背景はクリックで閉じる）*/}
+        {modalSrc &&
+          createPortal(
+            <div
+              className="modal"
+              role="dialog"
+              aria-modal="true"
+              onClick={closeModal}
+            >
+              <div
+                className="modal__inner"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <button
+                  className="modal__close"
+                  onClick={closeModal}
+                  aria-label="閉じる"
+                >
+                  ×
+                </button>
+                <div className={`modal__content ${modalMode}`}>
+                  <img src={modalSrc} alt="拡大プレビュー" />
+                </div>
+              </div>
+            </div>,
+            document.body
+          )}
       </div>
     </section>
   );

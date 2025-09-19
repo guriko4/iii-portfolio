@@ -4,15 +4,23 @@ const webItems = [
   {
     id: 1,
     title: "ROOMSサービスサイト",
+    url: "https://www.rooms-online.jp/",
     tools: {
       design: "Illustrator / Photoshop",
       frontend: "HTML / SCSS / JavaScript / GSAP",
       environment: "WordPress / Node.js / Git / Vite / VScode / Local",
     },
-    url: "https://www.rooms-online.jp/",
+    preview: {
+      pc: "/img/id1_pc.webp",
+      sp: "/img/id1_sp.webp",
+    },
     comment: "コンテンツ提案からデザイン・コーディングまで担当しました。",
   },
-  { id: 2, title: "Graphic", body: "Posters / Editorial / Branding" },
+  {
+    id: 2,
+    title: "SPOKES（LP）",
+    body: "Posters / Editorial / Branding",
+  },
   { id: 3, title: "About", body: "designer & Front-end" },
 ];
 
