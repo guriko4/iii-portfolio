@@ -1,3 +1,9 @@
+.slider-container {
+  width: calc(100vw - 17px);
+  height: 100vh;
+  overflow: hidden;
+}
+
 ul {
   list-style: none;
   padding-left: 0;
@@ -8,8 +14,10 @@ ul {
   margin: 0 auto;
 
   &__viewport {
-    //overflow: hidden;
     border-radius: 20px;
+    touch-action: pan-y;
+    -webkit-user-select: none;
+    user-select: none;
   }
 
   &__track {
@@ -26,6 +34,7 @@ ul {
 }
 
 .glass-card {
+  height: 80vh;
   background: rgba(255, 255, 255, 0.08);
   border: 1px solid rgba(255, 255, 255, 0.3);
   border-radius: 20px;
@@ -44,14 +53,47 @@ ul {
   }
 }
 
-.glass-card__title {
-  font-size: 1.6rem;
-  margin: 0 0 0.5rem;
+.glass-card__body {
+  display: flex;
+  gap: 24px;
+  height: 100%;
 }
 
 .glass-card__text {
-  line-height: 1.7;
-  opacity: 0.9;
+  flex: 1;
+  color: #fff;
+
+  h3 {
+    font-size: 2rem;
+    margin: 0;
+  }
+
+  .tools {
+    margin: 2rem 0;
+    padding: 2rem;
+    background: rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 20px;
+    font-size: 1rem;
+    line-height: 1.8;
+
+    strong {
+      color: #ffcc66;
+    }
+
+    p {
+      margin-top: 0;
+    }
+
+    .card-last p {
+      margin-bottom: 0;
+    }
+  }
+}
+
+.glass-card__img {
+  flex: 1;
+  background-color: cornsilk;
 }
 
 .glass-slider__controls {

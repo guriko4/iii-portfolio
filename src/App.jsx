@@ -3,16 +3,19 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ScrollToPlugin } from "gsap/ScrollToPlugin";
 import GlassSlider from "./components/GlassSlider";
+import WebSlider from "./components/sliders/WebSlider";
+import GraphicSlider from "./components/sliders/GraphicSlider";
+import AboutSlider from "./components/sliders/AboutSlider";
 
 export default function App() {
   const titleImgRef = useRef(null);
 
   //グラススライダー
-  const sliderItems = [
-    { id: 1, title: "Web", body: "WordPress / React / GSAP" },
-    { id: 2, title: "Graphic", body: "Posters / Editorial / Branding" },
-    { id: 3, title: "About", body: "designer & Front-end" },
-  ];
+  //const sliderItems = [
+  //  { id: 1, title: "Web", body: "WordPress / React / GSAP" },
+  //  { id: 2, title: "Graphic", body: "Posters / Editorial / Branding" },
+  //  { id: 3, title: "About", body: "designer & Front-end" },
+  //];
 
   const setBg = (url = "/img/title-back1.webp") => {
     const el = titleImgRef.current;
@@ -206,17 +209,23 @@ export default function App() {
 
         <section className="section" id="web">
           <div className="section--title">Web Design</div>
-          <div className="top__slider scroll-move">
-            <GlassSlider items={sliderItems} />
+          <div className="section__slider scroll-move">
+            <WebSlider />
           </div>
         </section>
 
         <section className="section" id="graphic">
           <div className="section--title">Graphic Design</div>
+          <div className="section__slider scroll-move">
+            <GraphicSlider />
+          </div>
         </section>
 
         <section className="section" id="about">
           <div className="section--title">About Me</div>
+          <div className="section__slider scroll-move">
+            <AboutSlider />
+          </div>
         </section>
       </main>
 

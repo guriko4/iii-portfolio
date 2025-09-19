@@ -1,15 +1,12 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useRef } from "react";
 import "./glass-slider.scss";
 
-export default function GlassSlider({
-  items = [
-    { id: 1, title: "Web", body: "WordPress / React / GSAP" },
-    { id: 2, title: "Graphic", body: "Posters / Editorial / Branding" },
-    { id: 3, title: "About", body: "designer & Front-end" },
-  ],
-  loop = false,
-}) {
+export default function GlassSlider({ items = [] }) {
   const [index, setIndex] = useState(0);
+
+  //  スワイプ設定
+  const startX = useRef(0);
+  const deltaX = useRef(0);
 
   const next = useCallback(
     () => setIndex((i) => Math.min(i + 1, items.length - 1)),
@@ -20,58 +17,120 @@ export default function GlassSlider({
     [items.length]
   );
 
-  return (
-    <section className="glass-slider" aria-roledescription="carousel">
-      <div className="glass-slider__viewport" aria-live="polite">
-        <ul
-          className="glass-slider__track"
-          style={{ transform: `translatex(${-index * 100}%)` }}
-        >
-          {items.map((it, i) => (
-            <li
-              className="glass-slider__slide"
-              key={it.id ?? i}
-              aria-hidden={i !== index}
-            >
-              <article className="glass-card">
-                <div className="glass-card__body">
-                  <h3 className="glass-card__title">{it.title}</h3>
-                  <p className="glass-card__text">{it.body}</p>
-                </div>
-              </article>
-            </li>
-          ))}
-        </ul>
-      </div>
+  //  スワイプハンドラ
+  const onTouchStart = (e) => {
+    startX.current = e.touches[0].clientX;
+    deltaX.curremt = 0;
+  };
+  const onTouchMove = (e) => {
+    deltaX.current = e.touches[0].clientX - startX.current;
+  };
+  const onTouchEnd = () => {
+    const THRESHOLD = 40;
+    if (deltaX.current > THRESHOLD) prev();
+    else if (deltaX.current < -THRESHOLD) next();
+    deltaX.current = 0;
+  };
+  const onKeyDown = (e) => {
+    if (e.key === "ArrowRight") next();
+    else if (e.key === "ArrowLeft") prev();
+  };
 
-      {/*下部コントロール（矢印＋ドット）*/}
-      <nav className="glass-slider__controls" aria-label="Carousel controls">
-        <button
-          className="arrow prev"
-          onClick={prev}
-          aria-label="Previous"
-          //  端で無効化
-          disabled={!loop && index === 0}
-        ></button>
-        <div className="glass-slider__dots" role="tablist" aria-label="Slides">
-          {items.map((_, i) => (
-            <button
-              key={i}
-              className={`dot ${i === index ? "is-active" : ""}`}
-              aria-label={`Go to slide ${i + 1}`}
-              aria-current={i === index ? "ture" : undefined}
-              onClick={() => setIndex(i)}
-            ></button>
-          ))}
+  return (
+    <section className="slider-container">
+      <div className="glass-slider" aria-roledescription="carousel">
+        <div
+          className="glass-slider__viewport"
+          aria-live="polite"
+          onTouchStart={onTouchStart}
+          onTouchMove={onTouchMove}
+          onTouchEnd={onTouchEnd}
+          tabIndex={0}
+          onKeyDown={onKeyDown}
+        >
+          <ul
+            className="glass-slider__track"
+            style={{ transform: `translateX(${-index * 100}%)` }}
+          >
+            {items.map((it, i) => (
+              <li
+                className="glass-slider__slide"
+                key={it.id ?? i}
+                aria-hidden={i !== index}
+              >
+                <article className="glass-card">
+                  <div className="glass-card__body">
+                    <div className="glass-card__text">
+                      <h3>{it.title}</h3>
+                      {it.tools && (
+                        <div className="tools">
+                          {it.tools.design && (
+                            <div>
+                              <strong>デザイン</strong>
+                              <p>{it.tools.design}</p>
+                            </div>
+                          )}
+                          {it.tools.frontend && (
+                            <div>
+                              <strong>フロントエンド</strong>
+                              <p>{it.tools.frontend}</p>
+                            </div>
+                          )}
+                          {it.tools.environment && (
+                            <div className="card-last">
+                              <strong>開発環境</strong>
+                              <p>{it.tools.environment}</p>
+                            </div>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                    <div className="glass-card__img">{it.body}</div>
+                  </div>
+                </article>
+              </li>
+            ))}
+          </ul>
         </div>
-        <button
-          className="arrow next"
-          onClick={next}
-          aria-label="Next"
-          //  端で無効化
-          disabled={!loop && index === items.length - 1}
-        ></button>
-      </nav>
+
+        {/*下部コントロール（矢印＋ドット）*/}
+        {items.length > 1 && (
+          <nav
+            className="glass-slider__controls"
+            aria-label="Carousel controls"
+          >
+            <button
+              className="arrow prev"
+              onClick={prev}
+              aria-label="Previous"
+              //  端で無効化
+              disabled={index === 0}
+            ></button>
+            <div
+              className="glass-slider__dots"
+              role="tablist"
+              aria-label="Slides"
+            >
+              {items.map((_, i) => (
+                <button
+                  key={i}
+                  className={`dot ${i === index ? "is-active" : ""}`}
+                  aria-label={`Go to slide ${i + 1}`}
+                  aria-current={i === index ? "true" : undefined}
+                  onClick={() => setIndex(i)}
+                ></button>
+              ))}
+            </div>
+            <button
+              className="arrow next"
+              onClick={next}
+              aria-label="Next"
+              //  端で無効化
+              disabled={index === items.length - 1}
+            ></button>
+          </nav>
+        )}
+      </div>
     </section>
   );
 }
