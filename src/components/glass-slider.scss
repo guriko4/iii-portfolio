@@ -378,3 +378,13 @@ ul {
   transform: translateY(-6px) scale(1.02);
   box-shadow: 0 18px 40px rgba(0, 0, 0, 0.35);
 }
+
+.glass-slider--about {
+  .glass-card__text {
+    color: #333; /* 文字色を変更（例：濃いグレー） */
+  }
+
+  .tools strong {
+    color: rgb(173, 71, 71);
+  }
+}

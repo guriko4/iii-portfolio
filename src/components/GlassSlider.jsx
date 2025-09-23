@@ -1,12 +1,16 @@
-import React, { useState, useCallback, useRef, useEffect } from "react";
+import React, {
+  useState,
+  useCallback,
+  useRef,
+  useEffect,
+  version,
+} from "react";
 import { createPortal } from "react-dom";
 import "./glass-slider.scss";
 
 export default function GlassSlider({ items = [], variant = "web" }) {
   const [index, setIndex] = useState(0);
-  const [viewMode, setViewMode] = useState(
-    variant === "graphic" ? "cover" : "pc"
-  );
+  const [viewMode, setViewMode] = useState({});
   const [modalSrc, setModalSrc] = useState(null);
   const [modalMode, setModalMode] = useState("pc");
 
@@ -40,9 +44,20 @@ export default function GlassSlider({ items = [], variant = "web" }) {
 
   //  カード内のプレビュー表示
   //  スライド切り替えたら初期モードに戻す
-  useEffect(() => {
-    setViewMode(variant === "graphic" ? "cover" : "pc");
-  }, [index, variant]);
+  //  useEffect(() => {
+  //    setViewMode(variant === "graphic" ? "cover" : "pc");
+  //  }, [index, variant]);
+  const getInitialMode = (it) => {
+    if (variant !== "graphic") return "pc";
+    const g = it.preview || {};
+    if (g.cover && g.spread) return "cover";
+    if (g.front && g.back) return "front";
+    return "pc";
+  };
+  //  現在のスライドモードを取得
+  const getMode = (i, it) => viewMode[i] ?? getInitialMode(it);
+  //  現在のスライドモードを更新
+  const setMode = (i, m) => setViewMode((s) => ({ ...s, [i]: m }));
 
   //  スワイプ設定
   const startX = useRef(0);
@@ -79,9 +94,9 @@ export default function GlassSlider({ items = [], variant = "web" }) {
   };
 
   //  モーダル
-  const openModal = (src) => {
+  const openModal = (src, mode) => {
     setModalSrc(src);
-    setModalMode(viewMode); // ← 開いたときの状態を保存
+    setModalMode(mode); // ← 開いたときの状態を保存
   };
   const closeModal = () => setModalSrc(null);
   useEffect(() => {
@@ -92,7 +107,10 @@ export default function GlassSlider({ items = [], variant = "web" }) {
 
   return (
     <section className="slider-container">
-      <div className="glass-slider" aria-roledescription="carousel">
+      <div
+        className={`glass-slider glass-slider--${variant}`}
+        aria-roledescription="carousel"
+      >
         <div
           className="glass-slider__viewport"
           aria-live="polite"
@@ -107,13 +125,14 @@ export default function GlassSlider({ items = [], variant = "web" }) {
             style={{ transform: `translateX(${-index * 100}%)` }}
           >
             {items.map((it, i) => {
+              const mode = getMode(i, it);
               let activeSrc = "";
               if (variant === "graphic") {
                 const g = it.preview || {};
                 if (g.cover && g.spread) {
-                  activeSrc = viewMode === "spread" ? g.spread : g.cover;
+                  activeSrc = mode === "spread" ? g.spread : g.cover;
                 } else if (g.front && g.back) {
-                  activeSrc = viewMode === "back" ? g.back : g.front;
+                  activeSrc = mode === "back" ? g.back : g.front;
                 } else {
                   activeSrc = g.single || "";
                 }
@@ -121,7 +140,7 @@ export default function GlassSlider({ items = [], variant = "web" }) {
                 const hasPC = !!it.preview?.pc || !!it.image; // 後方互換: imageをPC扱い
                 const hasSP = !!it.preview?.sp;
                 activeSrc =
-                  (viewMode === "sp" && hasSP && it.preview.sp) ||
+                  (mode === "sp" && hasSP && it.preview.sp) ||
                   it.preview?.pc ||
                   it.image ||
                   "";
@@ -195,9 +214,31 @@ export default function GlassSlider({ items = [], variant = "web" }) {
                             )}
                           </div>
                         )}
+                        {it.about_tools && (
+                          <div className="tools">
+                            {it.about_tools.design && (
+                              <div>
+                                <strong>デザイン</strong>
+                                <p>{it.about_tools.design}</p>
+                              </div>
+                            )}
+                            {it.about_tools.frontend && (
+                              <div>
+                                <strong>フロントエンド</strong>
+                                <p>{it.about_tools.frontend}</p>
+                              </div>
+                            )}
+                            {it.about_tools.seo && (
+                              <div className="card-last">
+                                <strong>マーケティング・SEO</strong>
+                                <p>{it.about_tools.seo}</p>
+                              </div>
+                            )}
+                          </div>
+                        )}
 
                         {/* プレビュー切替（Web or Graphic） */}
-                        {variant !== "graphic" ? (
+                        {variant === "web" ? (
                           <div
                             className="preview-toggle"
                             role="tablist"
@@ -207,10 +248,10 @@ export default function GlassSlider({ items = [], variant = "web" }) {
                               <button
                                 type="button"
                                 className={`toggle ${
-                                  viewMode === "pc" ? "is-active" : ""
+                                  getMode(i, it) === "pc" ? "is-active" : ""
                                 }`}
-                                onClick={() => setViewMode("pc")}
-                                aria-pressed={viewMode === "pc"}
+                                onClick={() => setMode(i, "pc")}
+                                aria-pressed={getMode(i, it) === "pc"}
                               >
                                 PC表示
                               </button>
@@ -219,16 +260,16 @@ export default function GlassSlider({ items = [], variant = "web" }) {
                               <button
                                 type="button"
                                 className={`toggle ${
-                                  viewMode === "sp" ? "is-active" : ""
+                                  getMode(i, it) === "sp" ? "is-active" : ""
                                 }`}
-                                onClick={() => setViewMode("sp")}
-                                aria-pressed={viewMode === "sp"}
+                                onClick={() => setMode(i, "sp")}
+                                aria-pressed={getMode(i, it) === "sp"}
                               >
                                 スマホ表示
                               </button>
                             )}
                           </div>
-                        ) : (
+                        ) : variant === "graphic" ? (
                           <div
                             className="preview-toggle"
                             role="tablist"
@@ -239,18 +280,22 @@ export default function GlassSlider({ items = [], variant = "web" }) {
                                 <button
                                   type="button"
                                   className={`toggle ${
-                                    viewMode === "cover" ? "is-active" : ""
+                                    getMode(i, it) === "cover"
+                                      ? "is-active"
+                                      : ""
                                   }`}
-                                  onClick={() => setViewMode("cover")}
+                                  onClick={() => setMode(i, "cover")}
                                 >
                                   表紙
                                 </button>
                                 <button
                                   type="button"
                                   className={`toggle ${
-                                    viewMode === "spread" ? "is-active" : ""
+                                    getMode(i, it) === "spread"
+                                      ? "is-active"
+                                      : ""
                                   }`}
-                                  onClick={() => setViewMode("spread")}
+                                  onClick={() => setMode(i, "spread")}
                                 >
                                   見開き
                                 </button>
@@ -261,25 +306,27 @@ export default function GlassSlider({ items = [], variant = "web" }) {
                                 <button
                                   type="button"
                                   className={`toggle ${
-                                    viewMode === "front" ? "is-active" : ""
+                                    getMode(i, it) === "front"
+                                      ? "is-active"
+                                      : ""
                                   }`}
-                                  onClick={() => setViewMode("front")}
+                                  onClick={() => setMode(i, "front")}
                                 >
                                   表面
                                 </button>
                                 <button
                                   type="button"
                                   className={`toggle ${
-                                    viewMode === "back" ? "is-active" : ""
+                                    getMode(i, it) === "back" ? "is-active" : ""
                                   }`}
-                                  onClick={() => setViewMode("back")}
+                                  onClick={() => setMode(i, "back")}
                                 >
                                   裏面
                                 </button>
                               </>
                             )}
                           </div>
-                        )}
+                        ) : null}
 
                         {/*コメント*/}
                         {it.comment && (
@@ -289,8 +336,8 @@ export default function GlassSlider({ items = [], variant = "web" }) {
 
                       {/* 右：プレビュー（クロップ表示・クリックで拡大） */}
                       <div
-                        className={`glass-card__img ${viewMode} ${
-                          variant === "graphic" && viewMode === "spread"
+                        className={`glass-card__img ${getMode(i, it)} ${
+                          variant === "graphic" && getMode(i, it) === "spread"
                             ? "is-scroll-x"
                             : ""
                         }`}
@@ -298,12 +345,13 @@ export default function GlassSlider({ items = [], variant = "web" }) {
                         {activeSrc ? (
                           <img
                             src={activeSrc}
-                            alt={`${
-                              it.title
-                            } ${viewMode.toUpperCase()}プレビュー`}
+                            alt={`${it.title} ${getMode(
+                              i,
+                              it
+                            ).toUpperCase()}プレビュー`}
                             loading="lazy"
                             decoding="async"
-                            onClick={() => openModal(activeSrc)}
+                            onClick={() => openModal(activeSrc, getMode(i, it))}
                             style={{ cursor: "zoom-in" }}
                           />
                         ) : (
