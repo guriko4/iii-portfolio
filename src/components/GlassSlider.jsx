@@ -2,9 +2,11 @@ import React, { useState, useCallback, useRef, useEffect } from "react";
 import { createPortal } from "react-dom";
 import "./glass-slider.scss";
 
-export default function GlassSlider({ items = [] }) {
+export default function GlassSlider({ items = [], variant = "web" }) {
   const [index, setIndex] = useState(0);
-  const [viewMode, setViewMode] = useState("pc");
+  const [viewMode, setViewMode] = useState(
+    variant === "graphic" ? "cover" : "pc"
+  );
   const [modalSrc, setModalSrc] = useState(null);
   const [modalMode, setModalMode] = useState("pc");
 
@@ -36,11 +38,11 @@ export default function GlassSlider({ items = [] }) {
     };
   }, [modalSrc]);
 
-  //  カード内のプレビュー表示（PC or SP）
-  //  スライド切り替えたらPCに戻す
+  //  カード内のプレビュー表示
+  //  スライド切り替えたら初期モードに戻す
   useEffect(() => {
-    setViewMode("pc");
-  }, [index]);
+    setViewMode(variant === "graphic" ? "cover" : "pc");
+  }, [index, variant]);
 
   //  スワイプ設定
   const startX = useRef(0);
@@ -105,26 +107,43 @@ export default function GlassSlider({ items = [] }) {
             style={{ transform: `translateX(${-index * 100}%)` }}
           >
             {items.map((it, i) => {
-              const hasPC = !!it.preview?.pc || !!it.image; // 後方互換: imageをPC扱い
-              const hasSP = !!it.preview?.sp;
-              const activeSrc =
-                (viewMode === "sp" && hasSP && it.preview.sp) ||
-                it.preview?.pc ||
-                it.image ||
-                "";
+              let activeSrc = "";
+              if (variant === "graphic") {
+                const g = it.preview || {};
+                if (g.cover && g.spread) {
+                  activeSrc = viewMode === "spread" ? g.spread : g.cover;
+                } else if (g.front && g.back) {
+                  activeSrc = viewMode === "back" ? g.back : g.front;
+                } else {
+                  activeSrc = g.single || "";
+                }
+              } else {
+                const hasPC = !!it.preview?.pc || !!it.image; // 後方互換: imageをPC扱い
+                const hasSP = !!it.preview?.sp;
+                activeSrc =
+                  (viewMode === "sp" && hasSP && it.preview.sp) ||
+                  it.preview?.pc ||
+                  it.image ||
+                  "";
+              }
               return (
                 <li
                   className="glass-slider__slide"
                   key={it.id ?? i}
                   aria-hidden={i !== index}
                 >
-                  <article className="glass-card">
+                  <article
+                    className="glass-card"
+                    aria-labelledby={`slide-title-${it.id ?? index}`}
+                  >
                     <div className="glass-card__body">
                       {/*左テキスト*/}
                       <div className="glass-card__text">
                         <div className="glass-card__title-wrap">
                           <div className="glass-card__title">
-                            <h3>{it.title}</h3>
+                            <h3 id={`slide-title-${it.id ?? index}`}>
+                              {it.title}
+                            </h3>
                           </div>
                           {it.url && (
                             <a
@@ -160,38 +179,107 @@ export default function GlassSlider({ items = [] }) {
                             )}
                           </div>
                         )}
+                        {it.graphic_tools && (
+                          <div className="tools">
+                            {it.graphic_tools.software && (
+                              <div>
+                                <strong>デザイン</strong>
+                                <p>{it.graphic_tools.software}</p>
+                              </div>
+                            )}
+                            {it.graphic_tools.role && (
+                              <div className="card-last">
+                                <strong>担当業務</strong>
+                                <p>{it.graphic_tools.role}</p>
+                              </div>
+                            )}
+                          </div>
+                        )}
 
-                        {/* PC/SP 切替（存在しない側は出さない） */}
-                        <div
-                          className="preview-toggle"
-                          role="tablist"
-                          aria-label="デバイス切り替え"
-                        >
-                          {hasPC && (
-                            <button
-                              type="button"
-                              className={`toggle ${
-                                viewMode === "pc" ? "is-active" : ""
-                              }`}
-                              onClick={() => setViewMode("pc")}
-                              aria-pressed={viewMode === "pc"}
-                            >
-                              PC表示
-                            </button>
-                          )}
-                          {hasSP && (
-                            <button
-                              type="button"
-                              className={`toggle ${
-                                viewMode === "sp" ? "is-active" : ""
-                              }`}
-                              onClick={() => setViewMode("sp")}
-                              aria-pressed={viewMode === "sp"}
-                            >
-                              スマホ表示
-                            </button>
-                          )}
-                        </div>
+                        {/* プレビュー切替（Web or Graphic） */}
+                        {variant !== "graphic" ? (
+                          <div
+                            className="preview-toggle"
+                            role="tablist"
+                            aria-label="デバイス切り替え"
+                          >
+                            {!!it.preview?.pc || !!it.image ? (
+                              <button
+                                type="button"
+                                className={`toggle ${
+                                  viewMode === "pc" ? "is-active" : ""
+                                }`}
+                                onClick={() => setViewMode("pc")}
+                                aria-pressed={viewMode === "pc"}
+                              >
+                                PC表示
+                              </button>
+                            ) : null}
+                            {it.preview?.sp && (
+                              <button
+                                type="button"
+                                className={`toggle ${
+                                  viewMode === "sp" ? "is-active" : ""
+                                }`}
+                                onClick={() => setViewMode("sp")}
+                                aria-pressed={viewMode === "sp"}
+                              >
+                                スマホ表示
+                              </button>
+                            )}
+                          </div>
+                        ) : (
+                          <div
+                            className="preview-toggle"
+                            role="tablist"
+                            aria-label="ページ切り替え"
+                          >
+                            {it.preview?.cover && it.preview?.spread && (
+                              <>
+                                <button
+                                  type="button"
+                                  className={`toggle ${
+                                    viewMode === "cover" ? "is-active" : ""
+                                  }`}
+                                  onClick={() => setViewMode("cover")}
+                                >
+                                  表紙
+                                </button>
+                                <button
+                                  type="button"
+                                  className={`toggle ${
+                                    viewMode === "spread" ? "is-active" : ""
+                                  }`}
+                                  onClick={() => setViewMode("spread")}
+                                >
+                                  見開き
+                                </button>
+                              </>
+                            )}
+                            {it.preview?.front && it.preview?.back && (
+                              <>
+                                <button
+                                  type="button"
+                                  className={`toggle ${
+                                    viewMode === "front" ? "is-active" : ""
+                                  }`}
+                                  onClick={() => setViewMode("front")}
+                                >
+                                  表面
+                                </button>
+                                <button
+                                  type="button"
+                                  className={`toggle ${
+                                    viewMode === "back" ? "is-active" : ""
+                                  }`}
+                                  onClick={() => setViewMode("back")}
+                                >
+                                  裏面
+                                </button>
+                              </>
+                            )}
+                          </div>
+                        )}
 
                         {/*コメント*/}
                         {it.comment && (
@@ -200,13 +288,21 @@ export default function GlassSlider({ items = [] }) {
                       </div>
 
                       {/* 右：プレビュー（クロップ表示・クリックで拡大） */}
-                      <div className={`glass-card__img ${viewMode}`}>
+                      <div
+                        className={`glass-card__img ${viewMode} ${
+                          variant === "graphic" && viewMode === "spread"
+                            ? "is-scroll-x"
+                            : ""
+                        }`}
+                      >
                         {activeSrc ? (
                           <img
                             src={activeSrc}
                             alt={`${
                               it.title
                             } ${viewMode.toUpperCase()}プレビュー`}
+                            loading="lazy"
+                            decoding="async"
                             onClick={() => openModal(activeSrc)}
                             style={{ cursor: "zoom-in" }}
                           />

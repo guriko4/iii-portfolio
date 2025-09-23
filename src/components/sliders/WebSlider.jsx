@@ -33,7 +33,22 @@ const webItems = [
     comment:
       "営業パートナー募集を目的としたランディングページを、企画段階からデザイン・フロント実装まで担当。信頼感を重視した配色とシンプルで分かりやすい情報設計により、ユーザーが迷わずCTAへ到達できる導線を意識しました。SEO対策も行い、問い合わせ数の向上に貢献。短納期ながら成果を出せる制作フローを経験しました。",
   },
-  { id: 3, title: "About", body: "designer & Front-end" },
+  {
+    id: 3,
+    title: "デバイスチェック(JTB他)",
+    url: "https://jtb.rooms-online.jp/enduser-faq/",
+    tools: {
+      design: "Illustrator",
+      frontend: "HTML / SCSS / JavaScript",
+      environment: "Node.js / Git / Vite / VScode ",
+    },
+    preview: {
+      pc: "/img/id3_pc.webp",
+      sp: "/img/id3_sp.webp",
+    },
+    comment:
+      "問い合わせが多いトラブルを解決するため、ユーザー自身で環境を確認できるページを提案・実装しました。JSでOS・ブラウザ・端末を自動判定し、User-Agent Client Hintsと従来のUser-Agent双方に対応。カメラ・マイク・スピーカーをリアルタイム検証し、利用不可時はOS別の対処法を提示。これによりエンドユーザーの自己解決率が向上し、問い合わせ削減に貢献。JTBをはじめ、メガバンクや自治体にも展開されています。",
+  },
 ];
 
 export default function WebSlider() {

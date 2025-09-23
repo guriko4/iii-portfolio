@@ -254,6 +254,30 @@ ul {
   }
 }
 
+.glass-card__img.is-scroll-x {
+  overflow-x: auto;
+  overflow-y: hidden;
+  display: block;
+  white-space: nowrap; /* 横長でも自然に */
+  -webkit-overflow-scrolling: touch;
+}
+.glass-card__img.is-scroll-x img {
+  height: 100%;
+  width: auto;
+  display: inline-block;
+}
+/* スクロールバー（webkit） */
+.glass-card__img.is-scroll-x::-webkit-scrollbar {
+  height: 8px;
+}
+.glass-card__img.is-scroll-x::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.35);
+  border-radius: 4px;
+}
+.glass-card__img.is-scroll-x::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+}
+
 /* モーダル */
 .modal {
   position: fixed;
