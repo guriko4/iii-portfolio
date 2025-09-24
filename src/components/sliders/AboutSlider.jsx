@@ -6,10 +6,11 @@ const aboutItems = [
     title: "飯貝 典子",
     about_tools: {
       // デザイン = 得意領域/役割として使う
-      design: "Webデザイン・グラフィックデザイン、各ディレクション",
+      design:
+        "Webデザイン・グラフィックデザイン、各ディレクション（tool:Illustrator・Photoshop・Figma・PremierPro）",
       // フロントエンド = 技術スタック
       frontend:
-        "React / JavaScript(ES6+) / SCSS / GSAP /  WordPress / Vite / Git & GitHub / Vercel / Figma / VS Code / local",
+        "React / JavaScript(ES6+) / SCSS / GSAP /  WordPress / Vite / Git & GitHub / Vercel / VS Code / local",
       seo: "GA4 / Looker Studio / SEO改善 / ページスピード改善 / UTM管理",
     },
     // プレビュー画像（任意）
