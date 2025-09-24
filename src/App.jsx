@@ -12,15 +12,6 @@ export default function App() {
   const [maskActive, setMaskActive] = useState(false);
   const titleImgRef = useRef(null);
 
-  // ESCで閉じる & 背景スクロールロック
-  //useEffect(() => {
-  //  const onKey = (e) => e.key === "Escape" && setMenuOpen(false);
-  //  if (menuOpen) document.documentElement.style.overflow = "hidden";
-  //  else document.documentElement.style.overflow = "";
-  //  window.addEventListener("keydown", onKey);
-  //  return () => window.removeEventListener("keydown", onKey);
-  //}, [menuOpen]);
-
   useEffect(() => {
     if (menuOpen) {
       const id = setTimeout(() => setMaskActive(true), 180);
