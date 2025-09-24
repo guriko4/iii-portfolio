@@ -9,16 +9,38 @@ import AboutSlider from "./components/sliders/AboutSlider";
 
 export default function App() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [maskActive, setMaskActive] = useState(false);
   const titleImgRef = useRef(null);
 
   // ESCで閉じる & 背景スクロールロック
+  //useEffect(() => {
+  //  const onKey = (e) => e.key === "Escape" && setMenuOpen(false);
+  //  if (menuOpen) document.documentElement.style.overflow = "hidden";
+  //  else document.documentElement.style.overflow = "";
+  //  window.addEventListener("keydown", onKey);
+  //  return () => window.removeEventListener("keydown", onKey);
+  //}, [menuOpen]);
+
   useEffect(() => {
-    const onKey = (e) => e.key === "Escape" && setMenuOpen(false);
-    if (menuOpen) document.documentElement.style.overflow = "hidden";
-    else document.documentElement.style.overflow = "";
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
+    if (menuOpen) {
+      const id = setTimeout(() => setMaskActive(true), 180);
+      return () => {
+        clearTimeout(id);
+        setMaskActive(false);
+      };
+    } else {
+      setMaskActive(false);
+    }
   }, [menuOpen]);
+
+  {
+    menuOpen && (
+      <div
+        className={`drawer-mask ${maskActive ? "is-active" : ""}`}
+        onClick={() => setMenuOpen(false)}
+      />
+    );
+  }
 
   const setBg = (url = "/img/title-back1.webp") => {
     const el = titleImgRef.current;
@@ -155,7 +177,10 @@ export default function App() {
       {/* ハンバーガー */}
       <button
         className={`hamburger ${menuOpen ? "is-open" : ""}`}
-        onClick={() => setMenuOpen(!menuOpen)}
+        onClick={() => {
+          e.stopPropagation();
+          setMenuOpen(!menuOpen);
+        }}
         aria-label="メニュー"
       >
         <span></span>
