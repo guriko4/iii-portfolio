@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ScrollToPlugin } from "gsap/ScrollToPlugin";
@@ -8,7 +8,17 @@ import GraphicSlider from "./components/sliders/GraphicSlider";
 import AboutSlider from "./components/sliders/AboutSlider";
 
 export default function App() {
+  const [menuOpen, setMenuOpen] = useState(false);
   const titleImgRef = useRef(null);
+
+  // ESCで閉じる & 背景スクロールロック
+  useEffect(() => {
+    const onKey = (e) => e.key === "Escape" && setMenuOpen(false);
+    if (menuOpen) document.documentElement.style.overflow = "hidden";
+    else document.documentElement.style.overflow = "";
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [menuOpen]);
 
   const setBg = (url = "/img/title-back1.webp") => {
     const el = titleImgRef.current;
@@ -138,45 +148,31 @@ export default function App() {
 
   return (
     <div className="wrapper">
-      <aside className="sidebar scroll-move">
+      {/* マスク（開いてる時だけ表示、タップで閉じる） */}
+      {menuOpen && (
+        <div className="drawer-mask" onClick={() => setMenuOpen(false)} />
+      )}
+      {/* ハンバーガー */}
+      <button
+        className={`hamburger ${menuOpen ? "is-open" : ""}`}
+        onClick={() => setMenuOpen(!menuOpen)}
+        aria-label="メニュー"
+      >
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+
+      <aside className={`sidebar scroll-move ${menuOpen ? "open" : ""}`}>
         <nav>
           <ul>
-            <li
-              data-text="HOME"
-              data-bg="/img/title-back1.webp"
-              className="menu-item"
-              onMouseEnter={(e) => setBg(e.currentTarget.dataset.bg)}
-              onMouseLeave={() => setBg("/img/title-back1.webp")}
-            >
-              <a href="#home">HOME</a>
-            </li>
-            <li
-              data-text="WEB"
-              data-bg="/img/title-back2.webp"
-              className="menu-item"
-              onMouseEnter={(e) => setBg(e.currentTarget.dataset.bg)}
-              onMouseLeave={() => setBg("/img/title-back1.webp")}
-            >
-              <a href="#web">WEB</a>
-            </li>
-            <li
-              data-text="GRAPHIC"
-              data-bg="/img/title-back3.webp"
-              className="menu-item"
-              onMouseEnter={(e) => setBg(e.currentTarget.dataset.bg)}
-              onMouseLeave={() => setBg("/img/title-back1.webp")}
-            >
-              <a href="#graphic">GRAPHIC</a>
-            </li>
-            <li
-              data-text="ABOUT"
-              data-bg="/img/title-back4.webp"
-              className="menu-item"
-              onMouseEnter={(e) => setBg(e.currentTarget.dataset.bg)}
-              onMouseLeave={() => setBg("/img/title-back1.webp")}
-            >
-              <a href="#about">ABOUT</a>
-            </li>
+            {["home", "web", "graphic", "about"].map((id, i) => (
+              <li key={i} data-text={id.toUpperCase()} className="menu-item">
+                <a href={`#${id}`} onClick={() => setMenuOpen(false)}>
+                  {id.toUpperCase()}
+                </a>
+              </li>
+            ))}
           </ul>
         </nav>
       </aside>
