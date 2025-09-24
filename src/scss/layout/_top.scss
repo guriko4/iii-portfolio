@@ -179,10 +179,6 @@ a {
     &.open {
       transform: translateX(0);
     }
-
-    //&.show {
-    //  transform: translateX(100%);
-    //}
   }
 }
 
@@ -271,7 +267,8 @@ a {
       opacity: 0;
 
       @media (max-width: 767px) {
-        top: 50%;
+        padding-top: 28vh;
+        height: 40%;
       }
     }
   }
