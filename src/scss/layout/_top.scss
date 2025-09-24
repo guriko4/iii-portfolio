@@ -267,8 +267,7 @@ a {
       opacity: 0;
 
       @media (max-width: 767px) {
-        padding-top: 28vh;
-        height: 40%;
+        top: 50%;
       }
     }
   }
