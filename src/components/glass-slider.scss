@@ -47,13 +47,18 @@ ul {
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
 }
 
-@supports not (
-  (
-    backdrop-filter: blur(1px),
-  )
-) {
-  .glass-card {
-    background: rgba(255, 255, 255, 0.12);
+/* iOS Safari 対策（SP時だけフィルタ弱め） */
+@supports (-webkit-touch-callout: none) {
+  @media (max-width: 767px) {
+    .glass-card {
+      backdrop-filter: none; /* 必要なら色だけ薄く */
+      background: rgba(255, 255, 255, 0.08);
+    }
+    .glass-card__img {
+      transform: translateZ(0);
+      backface-visibility: hidden;
+      will-change: transform;
+    }
   }
 }
 

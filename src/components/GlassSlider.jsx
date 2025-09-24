@@ -349,7 +349,24 @@ export default function GlassSlider({ items = [], variant = "web" }) {
                               i,
                               it
                             ).toUpperCase()}プレビュー`}
-                            loading="lazy"
+                            loading={
+                              i === 0 ||
+                              (variant === "graphic" &&
+                                !!it.preview?.single &&
+                                !(it.preview?.cover && it.preview?.spread) &&
+                                !(it.preview?.front && it.preview?.back))
+                                ? "eager"
+                                : "lazy"
+                            }
+                            fetchPriority={
+                              i === 0 ||
+                              (variant === "graphic" &&
+                                !!it.preview?.single &&
+                                !(it.preview?.cover && it.preview?.spread) &&
+                                !(it.preview?.front && it.preview?.back))
+                                ? "high"
+                                : "auto"
+                            }
                             decoding="async"
                             onClick={() => openModal(activeSrc, getMode(i, it))}
                             style={{ cursor: "zoom-in" }}
