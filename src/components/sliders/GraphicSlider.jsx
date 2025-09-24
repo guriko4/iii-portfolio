@@ -9,8 +9,8 @@ const graphicItems = [
     id: 1,
     title: "「こがも」表紙・巻頭記事",
     preview: {
-      cover: "/img/graphic1−1.webp",
-      spread: "/img/graphic1−2.webp",
+      cover: "/img/graphic1-1.webp",
+      spread: "/img/graphic1-2.webp",
     },
     graphic_tools: {
       software: "Illustrator / Photoshop",
@@ -23,8 +23,8 @@ const graphicItems = [
     id: 2,
     title: "「おりっぷ」表紙・巻頭記事",
     preview: {
-      cover: "/img/graphic2−1.webp",
-      spread: "/img/graphic2−2.webp",
+      cover: "/img/graphic2-1.webp",
+      spread: "/img/graphic2-2.webp",
     },
     graphic_tools: {
       software: "Illustrator / Photoshop",

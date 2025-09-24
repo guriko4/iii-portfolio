@@ -33,14 +33,14 @@ export default function App() {
     }
   }, [menuOpen]);
 
-  {
-    menuOpen && (
-      <div
-        className={`drawer-mask ${maskActive ? "is-active" : ""}`}
-        onClick={() => setMenuOpen(false)}
-      />
-    );
-  }
+  //{
+  //  menuOpen && (
+  //    <div
+  //      className={`drawer-mask ${maskActive ? "is-active" : ""}`}
+  //      onClick={() => setMenuOpen(false)}
+  //    />
+  //  );
+  //}
 
   const setBg = (url = "/img/title-back1.webp") => {
     const el = titleImgRef.current;
@@ -177,11 +177,12 @@ export default function App() {
       {/* ハンバーガー */}
       <button
         className={`hamburger ${menuOpen ? "is-open" : ""}`}
-        onClick={() => {
+        onClick={(e) => {
           e.stopPropagation();
           setMenuOpen(!menuOpen);
         }}
-        aria-label="メニュー"
+        type="button"
+        aria-expanded={menuOpen}
       >
         <span></span>
         <span></span>
