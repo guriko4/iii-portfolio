@@ -2,6 +2,10 @@
   width: calc(100vw - 17px);
   height: 100vh;
   overflow: hidden;
+
+  @media (max-width: 767px) {
+    width: 100%;
+  }
 }
 
 ul {
@@ -400,6 +404,15 @@ ul {
     aspect-ratio: auto;
     height: auto;
     max-height: none;
+    display: block;
+  }
+
+  .glass-slider--graphic .glass-card__img.pc img,
+  .glass-slider--about .glass-card__img.pc img {
+    width: 100%;
+    height: auto; /* ← ここが重要！100%を解除 */
+    object-fit: contain; /* 切れないように */
+    display: block;
   }
 }
 
