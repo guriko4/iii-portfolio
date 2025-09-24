@@ -115,7 +115,7 @@ ul {
 
   .tools {
     margin: clamp(1rem, -0.778rem + 3.7vw, 2rem) 0;
-    padding: clamp(0.5rem, -2.167rem + 5.56vw, 2rem);
+    padding: clamp(0.5rem, -0.5rem + 2.08vw, 2rem);
     background: rgba(255, 255, 255, 0.12);
     border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: 20px;
@@ -123,12 +123,12 @@ ul {
     line-height: 1.8;
 
     strong {
-      font-size: clamp(0.8rem, 0.444rem + 0.74vw, 1rem);
+      font-size: clamp(0.8rem, 0.667rem + 0.28vw, 1rem);
       color: #ffcc66;
     }
 
     p {
-      font-size: clamp(0.8rem, 0.444rem + 0.74vw, 1rem);
+      font-size: clamp(0.8rem, 0.667rem + 0.28vw, 1rem);
       margin-top: 0;
     }
 
@@ -139,7 +139,7 @@ ul {
 }
 
 .glass-card__comment {
-  font-size: clamp(0.8rem, 0.444rem + 0.74vw, 1rem);
+  font-size: clamp(0.8rem, 0.733rem + 0.14vw, 0.9rem);
   line-height: 1.8;
 }
 
@@ -397,7 +397,7 @@ ul {
 
   .glass-slider--graphic .glass-card__img.pc,
   .glass-slider--about .glass-card__img.pc {
-    aspect-ratio: auto; /* ← これで比率縛りを解除 */
+    aspect-ratio: auto;
     height: auto;
     max-height: none;
   }
