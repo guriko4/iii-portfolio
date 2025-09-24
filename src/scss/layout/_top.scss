@@ -265,11 +265,12 @@ a {
       font-size: fluid(16, vw);
       line-height: 0;
       opacity: 0;
-
-      @media (max-width: 767px) {
-        top: 50%;
-      }
     }
+  }
+
+  @media (max-width: 767px) {
+    padding-top: 28vh;
+    height: 40%;
   }
 }
 
