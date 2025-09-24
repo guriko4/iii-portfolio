@@ -189,7 +189,8 @@ export default function App() {
         <span></span>
       </button>
 
-      <aside className={`sidebar scroll-move ${menuOpen ? "open" : ""}`}>
+      {/*<aside className={`sidebar scroll-move ${menuOpen ? "open" : ""}`}>*/}
+      <aside className={`sidebar ${menuOpen ? "open" : ""}`}>
         <nav>
           <ul>
             {["home", "web", "graphic", "about"].map((id, i) => (
